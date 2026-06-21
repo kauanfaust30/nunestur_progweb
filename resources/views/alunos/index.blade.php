@@ -5,7 +5,7 @@
 <div class="page-header">
     <div>
         <h1>Alunos</h1>
-
+        
     </div>
     <a href="/alunos/create" class="btn-orange">
         <i class="bi bi-plus-lg"></i> Novo aluno
@@ -51,12 +51,13 @@
                 </td>
                 <td style="color:var(--text-muted)">{{ $aluno->email }}</td>
                 <td style="color:var(--text-muted)">{{ $aluno->telefone ?? '—' }}</td>
-                <td>
-                    <div class="toolbar" style="justify-content:flex-end">
+                <td style="white-space:nowrap">
+                    <div class="toolbar" style="justify-content:flex-end; flex-wrap:nowrap">
                         <a href="/alunos/{{ $aluno->id }}/edit" class="btn-outline-custom">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
-                        <form method="POST" action="/alunos/{{ $aluno->id }}" style="margin:0" onsubmit="return confirm('Excluir {{ $aluno->nome }}?')">
+                        <form method="POST" action="/alunos/{{ $aluno->id }}" style="margin:0"
+                              onsubmit="return confirmDelete(this, 'Tem certeza que deseja excluir o aluno {{ $aluno->nome }}? Essa ação não pode ser desfeita.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-danger-outline">

@@ -16,7 +16,17 @@
 
     <div class="section-head">
         <h2>Lista de instituições</h2>
-        <span class="badge-custom badge-blue">{{ count($instituicoes) }} cadastradas</span>
+        <form method="GET" action="/instituicoes" style="margin:0">
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input name="busca" placeholder="Buscar instituição..." value="{{ request('busca') }}">
+                </div>
+                <button type="submit" class="btn-outline-custom">
+                    <i class="bi bi-search"></i> Pesquisar
+                </button>
+            </div>
+        </form>
     </div>
 
     <table class="data-table">
@@ -39,12 +49,13 @@
                     </div>
                 </td>
                 <td style="color:var(--text-muted)">{{ $i->endereco ?? '—' }}</td>
-                <td>
-                    <div class="toolbar" style="justify-content:flex-end">
+                <td style="white-space:nowrap">
+                    <div class="toolbar" style="justify-content:flex-end; flex-wrap:nowrap">
                         <a href="/instituicoes/{{ $i->id }}/edit" class="btn-outline-custom">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
-                        <form method="POST" action="{{ route('instituicoes.destroy', $i) }}" style="margin:0" onsubmit="return confirm('Excluir {{ $i->nome }}?')">
+                        <form method="POST" action="/instituicoes/{{ $i->id }}" style="margin:0"
+                              onsubmit="return confirmDelete(this, 'Tem certeza que deseja excluir a instituição {{ $i->nome }}? Essa ação não pode ser desfeita.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-danger-outline">
@@ -58,7 +69,7 @@
             <tr>
                 <td colspan="3" style="text-align:center; padding:2rem; color:var(--text-muted)">
                     <i class="bi bi-building" style="font-size:2rem; display:block; margin-bottom:.5rem; opacity:.3"></i>
-                    Nenhuma instituição cadastrada.
+                    Nenhuma instituição encontrada.
                 </td>
             </tr>
             @endforelse

@@ -16,7 +16,17 @@
 
     <div class="section-head">
         <h2>Lista de matrículas</h2>
-        <span class="badge-custom badge-blue">{{ count($matriculas) }} cadastradas</span>
+        <form method="GET" action="/matriculas" style="margin:0">
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input name="busca" placeholder="Buscar por aluno..." value="{{ request('busca') }}">
+                </div>
+                <button type="submit" class="btn-outline-custom">
+                    <i class="bi bi-search"></i> Pesquisar
+                </button>
+            </div>
+        </form>
     </div>
 
     <table class="data-table">
@@ -60,7 +70,8 @@
                         <a href="{{ route('matriculas.edit', $m) }}" class="btn-outline-custom">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
-                        <form method="POST" action="{{ route('matriculas.destroy', $m) }}" style="margin:0" onsubmit="return confirm('Excluir matrícula de {{ $m->aluno->nome }}?')">
+                        <form method="POST" action="{{ route('matriculas.destroy', $m) }}" style="margin:0"
+                              onsubmit="return confirmDelete(this, 'Tem certeza que deseja excluir a matrícula de {{ $m->aluno->nome }}? Essa ação não pode ser desfeita.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-danger-outline">
@@ -74,7 +85,7 @@
             <tr>
                 <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted)">
                     <i class="bi bi-clipboard-x" style="font-size:2rem; display:block; margin-bottom:.5rem; opacity:.3"></i>
-                    Nenhuma matrícula cadastrada.
+                    Nenhuma matrícula encontrada.
                 </td>
             </tr>
             @endforelse

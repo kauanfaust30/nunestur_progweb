@@ -16,7 +16,17 @@
 
     <div class="section-head">
         <h2>Lista de veículos</h2>
-        <span class="badge-custom badge-blue">{{ count($veiculos) }} cadastrados</span>
+        <form method="GET" action="/veiculos" style="margin:0">
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input name="busca" placeholder="Buscar veículo..." value="{{ request('busca') }}">
+                </div>
+                <button type="submit" class="btn-outline-custom">
+                    <i class="bi bi-search"></i> Pesquisar
+                </button>
+            </div>
+        </form>
     </div>
 
     <table class="data-table">
@@ -49,12 +59,13 @@
                 <td style="color:var(--text-muted)">
                     <i class="bi bi-people" style="margin-right:4px"></i>{{ $veiculo->capacidade }} lugares
                 </td>
-                <td>
-                    <div class="toolbar" style="justify-content:flex-end">
+                <td style="white-space:nowrap">
+                    <div class="toolbar" style="justify-content:flex-end; flex-wrap:nowrap">
                         <a href="/veiculos/{{ $veiculo->id }}/edit" class="btn-outline-custom">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
-                        <form method="POST" action="/veiculos/{{ $veiculo->id }}" style="margin:0" onsubmit="return confirm('Excluir {{ $veiculo->modelo }}?')">
+                        <form method="POST" action="/veiculos/{{ $veiculo->id }}" style="margin:0"
+                              onsubmit="return confirmDelete(this, 'Tem certeza que deseja excluir o veículo {{ $veiculo->modelo }}? Essa ação não pode ser desfeita.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-danger-outline">
@@ -68,7 +79,7 @@
             <tr>
                 <td colspan="5" style="text-align:center; padding:2rem; color:var(--text-muted)">
                     <i class="bi bi-truck" style="font-size:2rem; display:block; margin-bottom:.5rem; opacity:.3"></i>
-                    Nenhum veículo cadastrado.
+                    Nenhum veículo encontrado.
                 </td>
             </tr>
             @endforelse

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MatriculaTransporte;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 
 class RelatorioController extends Controller
 {
@@ -14,19 +14,30 @@ class RelatorioController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $totalAlunos    = $matriculas->count();
-        $valorTotal     = $matriculas->sum('valor_subsidio');
-        $dataGeracao    = now()->format('d/m/Y H:i');
-        $mesReferencia  = now()->translatedFormat('F \d\e Y');
+        $totalAlunos   = $matriculas->count();
+        $valorTotal    = $matriculas->sum('valor_subsidio');
+        $dataGeracao   = now()->format('d/m/Y H:i');
+        $mesReferencia = now()->translatedFormat('F \d\e Y');
 
-        $pdf = Pdf::loadView('relatorio_alunos', compact(
+        $html = view('relatorio_alunos', compact(
             'matriculas',
             'totalAlunos',
             'valorTotal',
             'dataGeracao',
             'mesReferencia'
-        ))->setPaper('a4', 'landscape');
+        ))->render();
 
-        return $pdf->stream('relatorio-transporte-escolar.pdf');
+        $mpdf = new Mpdf([
+            'format'        => 'A4-L', // A4 paisagem
+            'margin_top'    => 12,
+            'margin_bottom' => 12,
+            'margin_left'   => 12,
+            'margin_right'  => 12,
+        ]);
+
+        $mpdf->WriteHTML($html);
+
+        return response($mpdf->Output('relatorio-transporte-escolar.pdf', 'I'))
+            ->header('Content-Type', 'application/pdf');
     }
 }

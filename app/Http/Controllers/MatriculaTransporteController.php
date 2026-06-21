@@ -10,9 +10,15 @@ use Illuminate\Http\Request;
 
 class MatriculaTransporteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $matriculas = MatriculaTransporte::with('aluno', 'instituicao', 'veiculo')->get();
+        $matriculas = MatriculaTransporte::with('aluno', 'instituicao', 'veiculo')
+            ->when($request->busca, function ($query) use ($request) {
+                $query->whereHas('aluno', function ($q) use ($request) {
+                    $q->where('nome', 'like', '%' . $request->busca . '%');
+                });
+            })
+            ->get();
 
         return view('matriculas.index', compact('matriculas'));
     }
